@@ -54,10 +54,13 @@ namespace AssemblyData {
 		public int DefineStringDecrypter(int methodToken) {
 			CheckStringDecrypter();
 			var methodInfo = FindMethod(methodToken);
+						
 			if (methodInfo == null)
-				throw new ApplicationException(string.Format("Could not find method {0:X8}", methodToken));
+			throw new ApplicationException(string.Format("Could not find method {0:X8}", methodToken));
+					if (methodInfo.ReturnType.IsGenericParameter)
+							methodInfo = methodInfo.MakeGenericMethod(typeof(string));
 			if (methodInfo.ReturnType != typeof(string) && methodInfo.ReturnType != typeof(object))
-				throw new ApplicationException(string.Format("Method return type must be string or object: {0}", methodInfo));
+			throw new ApplicationException(string.Format("Method return type must be string or object: {0}", methodInfo));
 			return stringDecrypter.DefineStringDecrypter(methodInfo);
 		}
 
